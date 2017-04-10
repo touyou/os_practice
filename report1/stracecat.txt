@@ -1,0 +1,81 @@
+execve("/bin/cat", ["/bin/cat", "/proc/meminfo"], [/* 63 vars */]) = 0
+brk(0)                                  = 0x1f71000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fab78d63000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=91333, ...}) = 0
+mmap(NULL, 91333, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fab78d4c000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P \2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1853216, ...}) = 0
+mmap(NULL, 3961536, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fab7877b000
+mprotect(0x7fab78939000, 2093056, PROT_NONE) = 0
+mmap(0x7fab78b38000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1bd000) = 0x7fab78b38000
+mmap(0x7fab78b3e000, 17088, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fab78b3e000
+close(3)                                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fab78d4b000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fab78d49000
+arch_prctl(ARCH_SET_FS, 0x7fab78d49740) = 0
+mprotect(0x7fab78b38000, 16384, PROT_READ) = 0
+mprotect(0x60a000, 4096, PROT_READ)     = 0
+mprotect(0x7fab78d65000, 4096, PROT_READ) = 0
+munmap(0x7fab78d4c000, 91333)           = 0
+brk(0)                                  = 0x1f71000
+brk(0x1f92000)                          = 0x1f92000
+open("/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=8190752, ...}) = 0
+mmap(NULL, 8190752, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fab77fab000
+close(3)                                = 0
+fstat(1, {st_mode=S_IFREG|0664, st_size=2040, ...}) = 0
+open("/proc/meminfo", O_RDONLY)         = 3
+fstat(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+fadvise64(3, 0, 0, POSIX_FADV_SEQUENTIAL) = 0
+read(3, "MemTotal:       16336292 kB\nMemF"..., 65536) = 1279
+write(1, "MemTotal:       16336292 kB\nMemF"..., 1279) = 1279
+read(3, "", 65536)                      = 0
+close(3)                                = 0
+close(1)                                = 0
+close(2)                                = 0
+exit_group(0)                           = ?
++++ exited with 0 +++
+
+Inactive(anon):   356776 kB
+Active(file):     933292 kB
+Inactive(file):   765620 kB
+Unevictable:          32 kB
+Mlocked:              32 kB
+SwapTotal:      16999420 kB
+SwapFree:       16999420 kB
+Dirty:                 0 kB
+Writeback:             0 kB
+AnonPages:        862644 kB
+Mapped:           314744 kB
+Shmem:            363712 kB
+Slab:             213872 kB
+SReclaimable:     181164 kB
+SUnreclaim:        32708 kB
+KernelStack:        7376 kB
+PageTables:        27036 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    25167564 kB
+Committed_AS:    4033640 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:    450560 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      112448 kB
+DirectMap2M:     2936832 kB
+DirectMap1G:    14680064 kB
