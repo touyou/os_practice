@@ -1,0 +1,40 @@
+【考察】
+
+実行の結果、１回の実行で3マイクロ秒、1000回実行しても5マイクロ秒しかかかっていないため、getpid自体のコストは非常に小さいものであると考えられる。
+
+【実行結果】
+
+1 times getpid() --- 
+start: 1492403584 225257
+end: 1492403584 225260
+1000 times getpid() --- 
+start: 1492403584 225288
+end: 1492403584 225293
+
+【コード】
+
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+pid_t p_pid;
+
+int main() {
+    struct timeval tv, aftv;
+    gettimeofday(&tv, NULL);
+    p_pid = getpid();
+    gettimeofday(&aftv, NULL);
+    printf("1 times getpid() --- \nstart: %ld %06lu\nend: %ld %06lu\n",
+        tv.tv_sec, tv.tv_usec, aftv.tv_sec, aftv.tv_usec);
+    
+    gettimeofday(&tv, NULL);
+    for (int i=0; i<1000; i++) {
+        p_pid = getpid();
+    }
+    gettimeofday(&aftv, NULL);
+    printf("1000 times getpid() --- \nstart: %ld %06lu\nend: %ld %06lu\n",
+        tv.tv_sec, tv.tv_usec, aftv.tv_sec, aftv.tv_usec);
+    return 0;
+}
