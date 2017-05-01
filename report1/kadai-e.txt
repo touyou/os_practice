@@ -1,0 +1,11 @@
+catだけ
+
+$ cat /proc/meminfo > catonly.txt
+
+straceだけ
+
+$ strace -o straceonly.txt /bin/cat /proc/meminfo
+
+両方
+
+$ strace -o stracecat.txt /bin/cat /proc/meminfo >> stracecat.txt
