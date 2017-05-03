@@ -25,12 +25,18 @@ int NTHREAD = 2000;
 int main(int argc, char **argv) {
     int sock;
     int m, len;
+    int sockoptval = 1;
     struct sockaddr_in addr;
     fd_set fds, readfds;
     char buf[2048];
 
     // sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &sockoptval, sizeof(sockoptval)) == -1) {
+        perror("setsockopt");
+        return 1;
+    }
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons(atoi(argv[1]));

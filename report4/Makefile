@@ -19,4 +19,4 @@ tcpechoclient2: tcpechoclient2.c
 	gcc tcpechoclient2.c -o tcpechoclient2
 
 clean:
-	rm udpechoserver udpechoclient tcpechoserver1 tcpechoserver2 tcpechoclient
+	rm udpechoserver udpechoclient tcpechoserver1 tcpechoserver2 tcpechoclient tcpechoclient2 a.out
