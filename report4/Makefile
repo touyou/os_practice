@@ -1,22 +1,25 @@
-all: udpechoserver udpechoclient tcpechoserver1 tcpechoserver2 tcpechoclient tcpechoclient2
+all: udpechoserver udpechoclient tcpechoserver1 tcpechoserver2 tcpechoclient iperfc iperfs
 
 udpechoserver: udpechoserver.c
-	gcc udpechoserver.c -o udpechoserver
+	gcc -Wall -std=gnu99 udpechoserver.c -o udpechoserver
 
 udpechoclient: udpechoclient.c
-	gcc udpechoclient.c -o udpechoclient
+	gcc -Wall -std=gnu99 udpechoclient.c -o udpechoclient
 
 tcpechoserver1: tcpechoserver1.c
-	gcc -pthread tcpechoserver1.c -o tcpechoserver1
+	gcc -pthread -Wall -std=gnu99 tcpechoserver1.c -o tcpechoserver1
 
 tcpechoserver2: tcpechoserver2.c
-	gcc tcpechoserver2.c -o tcpechoserver2
+	gcc -Wall -std=gnu99 tcpechoserver2.c -o tcpechoserver2
 
 tcpechoclient: tcpechoclient.c
-	gcc tcpechoclient.c -o tcpechoclient
+	gcc -Wall -std=gnu99 tcpechoclient.c -o tcpechoclient
 
-tcpechoclient2: tcpechoclient2.c
-	gcc tcpechoclient2.c -o tcpechoclient2
+iperfc: tcpechoclient2.c
+	gcc -Wall -std=gnu99 tcpechoclient2.c -o iperfc
+
+iperfs: iperfs.c
+	gcc -pthread -Wall -std=gnu99 iperfs.c -o iperfs
 
 clean:
-	rm udpechoserver udpechoclient tcpechoserver1 tcpechoserver2 tcpechoclient tcpechoclient2 a.out
+	rm udpechoserver udpechoclient tcpechoserver1 tcpechoserver2 tcpechoclient iperfs iperfc

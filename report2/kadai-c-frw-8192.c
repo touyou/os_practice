@@ -7,7 +7,6 @@
 
 int main(int argc, char **argv) {
     FILE *ffile, *tfile;
-    ssize_t rstat, wstat;
     size_t count = 8192;
     char buf[count];
     
@@ -26,15 +25,15 @@ int main(int argc, char **argv) {
     gettimeofday(&tv, NULL);
     
     while (1) {
-        fread(buf, count, 1, ffile);
-        if (feof(ffile) != 0) break;
+        size_t sz = fread(buf, 1, count, ffile);
         if (ferror(ffile) != 0) {
             perror("ファイルの読み出し中にエラーが発生しました。");
             return -1;
         }
         
-        fwrite(buf, count, 1, tfile);
+        fwrite(buf, 1, sz, tfile);
         
+        if (feof(ffile) != 0) break;
         if (ferror(tfile) != 0) {
             perror("ファイルの書き出し中にエラーが発生しました。");
             return -1;

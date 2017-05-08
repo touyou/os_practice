@@ -1,6 +1,5 @@
 【考察】
-
-実行の結果、１回の実行で3マイクロ秒、1000回実行しても5マイクロ秒しかかかっていないため、getpid自体のコストは非常に小さいものであると考えられる。
+straceの結果とman 2 getpidのNOTESにかかれているようにgetpidはキャッシュを利用して複数回呼び出されるときに無駄に呼び出してまちがったPIDを返さないよう工夫されているため、1回の時も1000回の時もほぼ変わらない時間で実行されていたと考えられる。
 
 【実行結果】
 
@@ -10,6 +9,51 @@ end: 1492403584 225260
 1000 times getpid() --- 
 start: 1492403584 225288
 end: 1492403584 225293
+
+【strace】
+execve("./kadai-a", ["./kadai-a"], [/* 93 vars */]) = 0
+brk(0)                                  = 0xd09000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5c2be87000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=100982, ...}) = 0
+mmap(NULL, 100982, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f5c2be6e000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P \2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1853216, ...}) = 0
+mmap(NULL, 3961536, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f5c2b89f000
+mprotect(0x7f5c2ba5d000, 2093056, PROT_NONE) = 0
+mmap(0x7f5c2bc5c000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1bd000) = 0x7f5c2bc5c000
+mmap(0x7f5c2bc62000, 17088, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f5c2bc62000
+close(3)                                = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5c2be6d000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5c2be6b000
+arch_prctl(ARCH_SET_FS, 0x7f5c2be6b740) = 0
+mprotect(0x7f5c2bc5c000, 16384, PROT_READ) = 0
+mprotect(0x600000, 4096, PROT_READ)     = 0
+mprotect(0x7f5c2be89000, 4096, PROT_READ) = 0
+munmap(0x7f5c2be6e000, 100982)          = 0
+getpid()                                = 3135
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 12), ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f5c2be86000
+write(1, "1 times getpid() --- \n", 221 times getpid() --- 
+     ) = 22
+write(1, "start: 1494219365 944949\n", 25start: 1494219365 944949
+     ) = 25
+write(1, "end: 1494219365 944972\n", 23end: 1494219365 944972
+     ) = 23
+write(1, "1000 times getpid() --- \n", 251000 times getpid() --- 
+     ) = 25
+write(1, "start: 1494219365 945291\n", 25start: 1494219365 945291
+     ) = 25
+write(1, "end: 1494219365 945307\n", 23end: 1494219365 945307
+     ) = 23
+exit_group(0)                           = ?
++++ exited with 0 +++
+
 
 【コード】
 

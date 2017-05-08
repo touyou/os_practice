@@ -3,15 +3,19 @@
 #include <pthread.h>
 #include "btree.h"
 
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 tnode *btree_create() {
     return NULL;
 }
 
 tnode *btree_insert(int v, tnode *t) {
     if (t == NULL) {
+        // pthread_mutex_lock(&mutex);
         t = btree_create();
         t = malloc(sizeof(tnode));
         t->v = v;
+        // pthread_mutex_unlock(&mutex);
     }
     else if (v <= t->v) t->left = btree_insert(v, t->left);
     else if (v > t->v) t->right = btree_insert(v, t->right);
@@ -33,15 +37,14 @@ void btree_dump(tnode *t) {
 }
 
 tnode *tree;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *func_thread(void *p) {
     int i;
-    pthread_mutex_lock(&mutex);
     for (i=0; i<10; i++) {
+        pthread_mutex_lock(&mutex);
         tree = btree_insert(i, tree);
+        pthread_mutex_unlock(&mutex);
     }
-    pthread_mutex_unlock(&mutex);
     pthread_exit(NULL);
 }
 

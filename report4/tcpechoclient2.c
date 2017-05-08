@@ -11,8 +11,7 @@ int main(int argc, char **argv) {
     int sock;
     struct sockaddr_in addr;
     struct timeval tv, gtv;
-    char buff[2048];
-    char inbuff[2048];
+    char *buff;
     socklen_t addrlen;
 
     sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -21,22 +20,31 @@ int main(int argc, char **argv) {
     addr.sin_port = htons(atoi(argv[2]));
     addr.sin_addr.s_addr = inet_addr(argv[1]);
 
-    printf("> ");
+    // datasize time スループットMbps
 
-    while (scanf("%s", buff) != EOF) {
-        addrlen = sizeof(addr);
-        connect(sock, (struct sockaddr *)&addr, addrlen);
-        gettimeofday(&tv, NULL);
-        write(sock, buff, sizeof(buff));
-
-        memset(inbuff, 0, sizeof(inbuff));
-        gettimeofday(&gtv, NULL);
-        int x = read(sock, inbuff, 2048);
-        printf("%s\n", inbuff);
-        printf("start: %ld %06lu\n", tv.tv_sec, tv.tv_usec);
-        printf("end: %ld %06lu\n", gtv.tv_sec, gtv.tv_usec);
-        printf("throughput: %f\n>", strlen(buff)*8.0/(gtv.tv_sec-tv.tv_sec));
+    for (int i=0; i < 1024*100; i++) {
+        *(buff + i) = 'a';
     }
+
+    char *endp = buff + 1024 * 100;
+
+    addrlen = sizeof(addr);
+    connect(sock, (struct sockaddr *)&addr, addrlen);
+    gettimeofday(&tv, NULL);
+
+    while (buff < endp) {
+        size_t cn = write(sock, buff, endp-buff);
+        if (cn == -1) {
+            perror("writing error");
+            return 1;
+        }
+        buff += cn;
+    }
+
+    gettimeofday(&gtv, NULL);
+    read(sock, buff, 2048);
+    printf("%d %ld %f\n", 102400, gtv.tv_sec - tv.tv_sec, 10.0 * 8 / (gtv.tv_sec-tv.tv_sec));
+
     close(sock);
     return 0;
 }
