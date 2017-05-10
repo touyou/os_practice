@@ -15,8 +15,8 @@ tcpechoserver2: tcpechoserver2.c
 tcpechoclient: tcpechoclient.c
 	gcc -Wall -std=gnu99 tcpechoclient.c -o tcpechoclient
 
-iperfc: tcpechoclient2.c
-	gcc -Wall -std=gnu99 tcpechoclient2.c -o iperfc
+iperfc: iperfc.c
+	gcc -Wall -std=gnu99 iperfc.c -o iperfc
 
 iperfs: iperfs.c
 	gcc -pthread -Wall -std=gnu99 iperfs.c -o iperfs

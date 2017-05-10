@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -24,7 +25,7 @@ int NTHREAD = 2000;
 
 int main(int argc, char **argv) {
     int sock;
-    int m, len;
+    int len;
     int sockoptval = 1;
     struct sockaddr_in addr;
     fd_set fds, readfds;
@@ -65,7 +66,7 @@ int main(int argc, char **argv) {
                 if (i == sock) {
                     int new_sock;
                     len = sizeof(addr);
-                    new_sock = accept(i, (struct sockaddr *)&addr, &len);
+                    new_sock = accept(i, (struct sockaddr *)&addr, (socklen_t *)&len);
                     printf("accept %d\n", i);
                     if (new_sock == -1) {
                         perror("accept");

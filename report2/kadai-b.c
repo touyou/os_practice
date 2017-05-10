@@ -8,8 +8,8 @@ int main(int argc, char **argv) {
     int ffile, tfile;
     ssize_t rstat, wstat;
     size_t count = 512;
-    char *buf;
-    
+    char buf[512];
+
     if ((ffile = open(argv[1], O_RDONLY)) == -1) {
         perror("コピー元のファイルが開けません。");
         return -1;
@@ -27,14 +27,15 @@ int main(int argc, char **argv) {
             return -1;
         }
         
-        char *endp = buf + rstat;
-        while (buf < endp) {
-            wstat = write(tfile, buf, endp-buf);
+        char *temp = buf;
+        char *endp = temp + rstat;
+        while (temp < endp) {
+            wstat = write(tfile, temp, endp-temp);
             if (wstat == -1) {
                 perror("ファイルの書き出し中にエラーが発生しました。");
                 return -1;
             }
-            buf = buf + wstat;
+            temp = temp + wstat;
         }
     }
     

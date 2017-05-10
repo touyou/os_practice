@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -28,6 +29,7 @@ void *server(void *arg) {
     char buf[2048];
 
     s = accept(ss, (struct sockaddr *)&senderaddr, &addrlen);
+    printf("accept socket %d\n", s);
     while (1) {
         memset(buf, 0, sizeof(buf));
         m = read(s, buf, 2048);
