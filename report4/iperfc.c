@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]) {
   struct timeval tv, gtv;
   socklen_t addrlen;
   char buf[10];
-  char sendbuf[100*100000000];
+  char sendbuf[100*10000000];
 
   if (argc != 3) {
     perror("number of argument");
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]) {
   addrlen = sizeof(addr);
 
   memset(sendbuf, 0, sizeof(sendbuf));
-  sendbuf[100*100000000-1] = EOF;
+  sendbuf[100*10000000-1] = EOF;
 
   // connect
   if (connect(sock, (struct sockaddr *)&addr, addrlen) == -1) {
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]) {
   }
 
   // send
-  char *endp = sendbuf + 100*100000000;
+  char *endp = sendbuf + 100*10000000;
   char *curbuf = sendbuf;
   gettimeofday(&tv, NULL);
   while (sendbuf < endp) {
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
   gettimeofday(&gtv, NULL);
 
   double tim = gtv.tv_sec - tv.tv_sec + (gtv.tv_usec - tv.tv_usec) / 1000000.0;
-  printf("%d byte %f sec %f Mbps\n", 100*100000000, tim, count/10000.0*8.0/tim);
+  printf("%d byte %f sec %f Mbps\n", 100*10000000, tim, 1000.0*8.0/tim);
 
   close(sock);
   return 0;

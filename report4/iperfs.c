@@ -8,17 +8,6 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 
-/**
- * tcpechoserver1 (port number)
- * port numberにコネクションを待ち、接続したクライアントから受信したデータをそのまま送り返す、を繰り返す
- * 複数スレッド版
- * 1. socket
- * 2. bind
- * 3. listen
- * 4. accept
- * 5. read / write
- * 6. close
- */
 
 int NTHREAD = 40;
 
@@ -27,7 +16,8 @@ void *server(void *arg) {
     struct sockaddr_in senderaddr;
     socklen_t addrlen;
     char buf[2048];
-    char sendbuf = 'a';
+    char sendbuf[1];
+    sendbuf[0] = 'a';
 
     s = accept(ss, (struct sockaddr *)&senderaddr, &addrlen);
     printf("accept socket %d\n", s);
@@ -36,11 +26,7 @@ void *server(void *arg) {
         m = read(s, buf, 2048);
         if (buf[m-1] == EOF) {
           write(s, sendbuf, sizeof(sendbuf));
-          break;
         }
-    }
-    if (buf[m-1] != EOF) {
-      write(s, sendbuf, sizeof(sendbuf));
     }
     close(s);
 }
