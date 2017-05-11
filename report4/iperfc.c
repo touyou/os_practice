@@ -8,13 +8,14 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
+  puts("initialize");
   int sock;
   struct sockaddr_in addr;
   struct timeval tv, gtv;
   socklen_t addrlen;
   char buf[10];
-  char sendbuf[100*10000000];
+  char sendbuf[10000000];
 
   if (argc != 3) {
     perror("number of argument");
@@ -22,6 +23,7 @@ int main(int argc, char *argv[]) {
   }
 
   // socket prepare
+  puts("socket prepare");
   sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
   addr.sin_family = AF_INET;
   addr.sin_port = htons(atoi(argv[2]));
@@ -29,32 +31,30 @@ int main(int argc, char *argv[]) {
   addrlen = sizeof(addr);
 
   memset(sendbuf, 0, sizeof(sendbuf));
-  sendbuf[100*10000000-1] = EOF;
+  sendbuf[10000000-1] = EOF;
 
   // connect
+  puts("connecting");
   if (connect(sock, (struct sockaddr *)&addr, addrlen) == -1) {
     perror("connection");
     return 1;
   }
 
   // send
-  char *endp = sendbuf + 100*10000000;
-  char *curbuf = sendbuf;
+  puts("sending");
   gettimeofday(&tv, NULL);
-  while (sendbuf < endp) {
-    size_t cn = write(sock, curbuf, endp-curbuf);
-    if (cn == -1) {
-      perror("sending");
-      return 1;
-    }
-    curbuf += cn;
+  size_t cn = write(sock, sendbuf, sizeof(sendbuf));
+  if (cn == -1) {
+    perror("sending");
+    return 1;
   }
   // return EOF
   read(sock, buf, 10);
   gettimeofday(&gtv, NULL);
+  puts("end");
 
   double tim = gtv.tv_sec - tv.tv_sec + (gtv.tv_usec - tv.tv_usec) / 1000000.0;
-  printf("%d byte %f sec %f Mbps\n", 100*10000000, tim, 1000.0*8.0/tim);
+  printf("%d byte %f sec %f Mbps\n", 10000000, tim, 10.0*8.0/tim);
 
   close(sock);
   return 0;
