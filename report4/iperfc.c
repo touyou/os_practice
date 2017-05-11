@@ -8,6 +8,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define BUFSIZE 1000000000
+char sendbuf[BUFSIZE];
+
+
 int main(int argc, char **argv) {
   puts("initialize");
   int sock;
@@ -15,7 +19,6 @@ int main(int argc, char **argv) {
   struct timeval tv, gtv;
   socklen_t addrlen;
   char buf[10];
-  char sendbuf[10000000];
 
   if (argc != 3) {
     perror("number of argument");
@@ -31,7 +34,7 @@ int main(int argc, char **argv) {
   addrlen = sizeof(addr);
 
   memset(sendbuf, 0, sizeof(sendbuf));
-  sendbuf[10000000-1] = EOF;
+  sendbuf[BUFSIZE-1] = EOF;
 
   // connect
   puts("connecting");
@@ -54,7 +57,7 @@ int main(int argc, char **argv) {
   puts("end");
 
   double tim = gtv.tv_sec - tv.tv_sec + (gtv.tv_usec - tv.tv_usec) / 1000000.0;
-  printf("%d byte %f sec %f Mbps\n", 10000000, tim, 10.0*8.0/tim);
+  printf("%d byte %f sec %f Mbps\n", BUFSIZE, tim, BUFSIZE/1000000.0*8.0/tim);
 
   close(sock);
   return 0;
