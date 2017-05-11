@@ -27,14 +27,20 @@ void *server(void *arg) {
     struct sockaddr_in senderaddr;
     socklen_t addrlen;
     char buf[2048];
+    char sendbuf = 'a';
 
     s = accept(ss, (struct sockaddr *)&senderaddr, &addrlen);
     printf("accept socket %d\n", s);
     while (1) {
         memset(buf, 0, sizeof(buf));
         m = read(s, buf, 2048);
-        buf[m] = '\0';
-        write(s, buf, sizeof(buf));
+        if (buf[m-1] == EOF) {
+          write(s, sendbuf, sizeof(sendbuf));
+          break;
+        }
+    }
+    if (buf[m-1] != EOF) {
+      write(s, sendbuf, sizeof(sendbuf));
     }
     close(s);
 }
