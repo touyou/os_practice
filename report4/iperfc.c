@@ -8,12 +8,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define BUFSIZE 1000000000
+#define BUFSIZE 10000000000
 char sendbuf[BUFSIZE];
 
 
 int main(int argc, char **argv) {
-  puts("initialize");
   int sock;
   struct sockaddr_in addr;
   struct timeval tv, gtv;
@@ -26,7 +25,6 @@ int main(int argc, char **argv) {
   }
 
   // socket prepare
-  puts("socket prepare");
   sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
   addr.sin_family = AF_INET;
   addr.sin_port = htons(atoi(argv[2]));
@@ -37,14 +35,12 @@ int main(int argc, char **argv) {
   sendbuf[BUFSIZE-1] = EOF;
 
   // connect
-  puts("connecting");
   if (connect(sock, (struct sockaddr *)&addr, addrlen) == -1) {
     perror("connection");
     return 1;
   }
 
   // send
-  puts("sending");
   gettimeofday(&tv, NULL);
   size_t cn = write(sock, sendbuf, sizeof(sendbuf));
   if (cn == -1) {
@@ -54,10 +50,9 @@ int main(int argc, char **argv) {
   // return EOF
   read(sock, buf, 10);
   gettimeofday(&gtv, NULL);
-  puts("end");
 
   double tim = gtv.tv_sec - tv.tv_sec + (gtv.tv_usec - tv.tv_usec) / 1000000.0;
-  printf("%d byte %f sec %f Mbps\n", BUFSIZE, tim, BUFSIZE/1000000.0*8.0/tim);
+  printf("%ld byte %f sec %f Mbps\n", BUFSIZE, tim, BUFSIZE/1000000.0*8.0/tim);
 
   close(sock);
   return 0;
