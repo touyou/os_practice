@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define BUFSIZE 10000000000
+#define BUFSIZE 10000000
 char sendbuf[BUFSIZE];
 
 
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
   gettimeofday(&gtv, NULL);
 
   double tim = gtv.tv_sec - tv.tv_sec + (gtv.tv_usec - tv.tv_usec) / 1000000.0;
-  printf("%ld byte %f sec %f Mbps\n", BUFSIZE, tim, BUFSIZE/1000000.0*8.0/tim);
+  printf("%d byte %f sec %f Mbps\n", BUFSIZE, tim, BUFSIZE/1000000.0*8.0/tim);
 
   close(sock);
   return 0;
