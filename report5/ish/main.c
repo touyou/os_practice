@@ -43,27 +43,33 @@ int main(int argc, char *argv[], char *envp[]) {
             } else if (get_output_redirection(curr_job) != NULL) {
             } else {
                 // pipe
-                int pid1, pid2;
-                if (pipe(fd) == -1) {
+                if (pipe(fd) < 0) {
                     perror("pipe");
                     return -1;
                 }
-                if ((pid1 = fork()) == 0) {
+
+                if ((pid = fork()) == 0) {
+                    close(fd[0]);
                     dup2(fd[1], 1);
                     execve(get_program_name(curr_job), get_arg_list(curr_job), envp);
+                    perror("failed running pipe 1");
+                    return -1;
                 }
-                if ((pid2 = fork()) == 0) {
+                if ((pid = fork()) == 0) {
+                    close(fd[1]);
                     dup2(fd[0], 0);
-                    execve(get_program_name(curr_job->next), get_arg_list(curr_job->next), envp);
+                    execve(get_program_name(curr_job), get_arg_list(curr_job), envp);
+                    perror("failed running pipe 2");
+                    return -1;
                 }
-                close(fd[0]); close(fd[1]);
+                close(fd[0]);
+                close(fd[1]);
                 wait(&status);
-                printf("status = %d\n", status);
             }
         } else {
             if ((pid = fork()) == 0) {
                 execve(get_program_name(curr_job), get_arg_list(curr_job), envp);
-                perror("failed runnning");
+                perror("failed running");
                 return -1;
             } else {
                 waitpid(pid, &status, WUNTRACED);
