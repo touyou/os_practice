@@ -88,6 +88,8 @@ static process* initialize_process() {
     p->output_option = TRUNC;
     p->output_redirection = NULL;
     p->next = NULL;
+    p->input_fd = 0;
+    p->output_fd = 1;
 
     return p;
 }

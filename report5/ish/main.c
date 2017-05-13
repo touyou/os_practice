@@ -27,6 +27,48 @@ write_option get_write_opt(process *j) {
     return j->output_option;
 }
 
+void exec_process(process *curr_prc) {
+    char *filename;
+    int fds[2];
+    int fd;
+    
+    if ((filename = get_input_redirection(curr_prc)) != NULL) {
+        curr_prc->input_fd = open(filename, O_RDONLY);
+    }
+    if ((filename = get_output_redirection(curr_prc)) != NULL) {
+        if (get_write_opt(curr_prc) == TRUNC) {
+            curr_prc->output_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+        } else {
+            curr_prc->output_fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+        }
+    }
+    
+    if (curr_prc->next != NULL) {
+        if (pipe(fds) < 0) {
+            perror("pipe");
+            exit(-1);
+        }
+        curr_prc->output_fd = fds[1];
+        curr_prc->next->input_fd = fds[0];
+    }
+    fork_process(curr_prc);
+    if ((fd = curr_prc->input_fd) != 0) close(curr_prc->input_fd);
+    if ((fd = curr_prc->output_fd) != 1) close(curr_prc->output_fd);
+    exec_process(curr_prc->next);
+}
+
+void fork_process(process *curr_prc) {
+    int pid;
+    
+    if ((pid = fork()) == 0) {
+        if (curr_prc->input_fd != 0) dup2(curr_prc->input_fd, 0);
+        if (curr_prc->output_fd != 1) dup2(curr_prc->output_fd, 1);
+        execve(get_program_name(curr_prc), get_arg_list(curr_prc), envp);
+        perror("failed running");
+        exit(-1);
+    }
+}
+
 int main(int argc, char *argv[], char *envp[]) {
     char s[LINELEN];
     job *curr_job;
@@ -44,69 +86,8 @@ int main(int argc, char *argv[], char *envp[]) {
         curr_prc = curr_job->process_list;
 
         print_job_list(curr_job);
-        if (has_next_program(curr_prc)) {
-            while (has_next_program(curr_prc)) {
-                // pipe
-                if (pipe(fd) < 0) {
-                    perror("pipe");
-                    return -1;
-                }
-
-                if ((pid = fork()) == 0) {
-                    close(fd[0]);
-                    dup2(fd[1], 1);
-                    execve(get_program_name(curr_prc), get_arg_list(curr_prc), envp);
-                    perror("failed running pipe 1");
-                    return -1;
-                }
-                if ((pid = fork()) == 0) {
-                    close(fd[1]);
-                    dup2(fd[0], 0);
-                    curr_prc = curr_prc->next;
-                    if (get_output_redirection(curr_prc) != NULL) {
-                        rfd = open(get_output_redirection(curr_prc), )
-                        dup2()
-                    }
-                    execve(get_program_name(curr_prc), get_arg_list(curr_prc), envp);
-                    perror("failed running pipe 2");
-                    return -1;
-                }
-                close(fd[0]);
-                close(fd[1]);
-                wait(&status);
-                if (get_input_redirection(curr_prc) != NULL) {
-                    if ((pid = fork()) == 0) {
-                        fd[0] = open(get_input_redirection(curr_prc), O_RDONLY);
-                        dup2(fd[0], 0);
-                        execve(get_program_name(curr_prc), get_arg_list(curr_prc), envp);
-                        perror("failed running in redirection");
-                        return -1;
-                    }
-                    close(fd[0]);
-                    wait(&status);
-                } else if (get_output_redirection(curr_prc) != NULL) {
-                    if ((pid = fork()) == 0) {
-                        fd[1] = open(get_input_redirection(curr_prc), O_RDONLY);
-                        dup2(fd[1], 1);
-                        execve(get_program_name(curr_prc), get_arg_list(curr_prc), envp);
-                        perror("failed running in redirection");
-                        return -1;
-                    }
-                    close(fd[1]);
-                    wait(&status);
-                } else {
-                    
-                }
-            }
-        } else {
-            if ((pid = fork()) == 0) {
-                execve(get_program_name(curr_prc), get_arg_list(curr_prc), envp);
-                perror("failed running");
-                return -1;
-            } else {
-                waitpid(pid, &status, WUNTRACED);
-            }
-        }
+        exec_process(curr_prc);
+        wait(&status);
 
         free_job(curr_job);
     }

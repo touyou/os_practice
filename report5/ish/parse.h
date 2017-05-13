@@ -19,6 +19,9 @@ typedef struct process_ {
 
     write_option output_option;
     char*        output_redirection;
+    
+    int input_fd;
+    int output_fd;
 
     struct process_* next;
 } process;
