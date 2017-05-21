@@ -1,11 +1,11 @@
 catだけ
 
-$ cat /proc/meminfo > catonly.txt
+$ strace /bin/cat /proc/meminfo > test.txt
 
 straceだけ
 
-$ strace -o straceonly.txt /bin/cat /proc/meminfo
+$ strace /bin/cat /proc/meminfo 2> test2.txt
 
 両方
 
-$ strace -o stracecat.txt /bin/cat /proc/meminfo >> stracecat.txt
+$ strace /bin/cat /proc/meminfo > test3.txt 2>&1

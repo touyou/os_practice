@@ -1,0 +1,94 @@
+execve("/bin/cat", ["/bin/cat", "/proc/meminfo"], [/* 72 vars */]) = 0
+brk(NULL)                               = 0x9905000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+mmap2(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7734000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=173846, ...}) = 0
+mmap2(NULL, 173846, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7709000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/i386-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\1\1\1\3\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\0\204\1\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1802928, ...}) = 0
+mmap2(NULL, 1808924, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb754f000
+mprotect(0xb7702000, 4096, PROT_NONE)   = 0
+mmap2(0xb7703000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1b3000) = 0xb7703000
+mmap2(0xb7706000, 10780, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7706000
+close(3)                                = 0
+set_thread_area({entry_number:-1, base_addr:0xb7736800, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0 (entry_number:6)
+mprotect(0xb7703000, 8192, PROT_READ)   = 0
+mprotect(0x8050000, 4096, PROT_READ)    = 0
+mprotect(0xb775e000, 4096, PROT_READ)   = 0
+munmap(0xb7709000, 173846)              = 0
+brk(NULL)                               = 0x9905000
+brk(0x9926000)                          = 0x9926000
+open("/usr/lib/locale/locale-archive", O_RDONLY|O_LARGEFILE|O_CLOEXEC) = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=4039456, ...}) = 0
+mmap2(NULL, 2097152, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb734f000
+mmap2(NULL, 1052672, PROT_READ, MAP_PRIVATE, 3, 0x2da000) = 0xb724e000
+close(3)                                = 0
+fstat64(1, {st_mode=S_IFREG|0644, st_size=2062, ...}) = 0
+open("/proc/meminfo", O_RDONLY|O_LARGEFILE) = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+fadvise64_64(3, 0, 0, POSIX_FADV_SEQUENTIAL) = 0
+mmap2(NULL, 139264, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7712000
+read(3, "MemTotal:        3860072 kB\nMemF"..., 131072) = 1388
+write(1, "MemTotal:        3860072 kB\nMemF"..., 1388MemTotal:        3860072 kB
+MemFree:          264656 kB
+MemAvailable:    1423748 kB
+Buffers:          187116 kB
+Cached:          1491696 kB
+SwapCached:            0 kB
+Active:          2743856 kB
+Inactive:         670352 kB
+Active(anon):    1679176 kB
+Inactive(anon):   279164 kB
+Active(file):    1064680 kB
+Inactive(file):   391188 kB
+Unevictable:        2892 kB
+Mlocked:            3012 kB
+HighTotal:       3003208 kB
+HighFree:          88884 kB
+LowTotal:         856864 kB
+LowFree:          175772 kB
+SwapTotal:       3915772 kB
+SwapFree:        3915772 kB
+Dirty:              1920 kB
+Writeback:             0 kB
+AnonPages:       1671688 kB
+Mapped:           500868 kB
+Shmem:            222864 kB
+Slab:             106356 kB
+SReclaimable:      74920 kB
+SUnreclaim:        31436 kB
+KernelStack:        7104 kB
+PageTables:        25656 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     5845808 kB
+Committed_AS:    8775696 kB
+VmallocTotal:     122880 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+AnonHugePages:    251904 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       24568 kB
+DirectMap2M:      888832 kB
+) = 1388
+read(3, "", 131072)                     = 0
+munmap(0xb7712000, 139264)              = 0
+close(3)                                = 0
+close(1)                                = 0
+close(2)                                = 0
+exit_group(0)                           = ?
++++ exited with 0 +++
