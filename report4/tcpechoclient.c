@@ -20,17 +20,19 @@ int main(int argc, char **argv) {
     addr.sin_port = htons(atoi(argv[2]));
     addr.sin_addr.s_addr = inet_addr(argv[1]);
 
+    memset(buff, 0, sizeof(buff));
     printf("> ");
 
     while (scanf("%s", buff) != EOF) {
         addrlen = sizeof(addr);
         connect(sock, (struct sockaddr *)&addr, addrlen);
-        write(sock, buff, sizeof(buff));
+        write(sock, buff, strlen(buff)+1);
 
         memset(inbuff, 0, sizeof(inbuff));
         read(sock, inbuff, 2048);
 
         printf("%s\n> ", inbuff);
+        memset(buff, 0, sizeof(buff));
     }
     close(sock);
     return 0;

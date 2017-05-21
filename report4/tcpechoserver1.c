@@ -31,9 +31,8 @@ void *server(void *arg) {
     s = accept(ss, (struct sockaddr *)&senderaddr, &addrlen);
     while (1) {
         memset(buf, 0, sizeof(buf));
-        m = read(s, buf, 2048);
-        buf[m] = '\0';
-        write(s, buf, sizeof(buf));
+        m = read(s, buf, sizeof(buf));
+        write(s, buf, m);
     }
     close(s);
 }

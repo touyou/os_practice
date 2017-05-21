@@ -75,13 +75,12 @@ int main(int argc, char **argv) {
                     if (new_sock <= FD_SETSIZE - 1) FD_SET(new_sock, &readfds);
                 } else {
                     int read_size;
-                    read_size = read(i, buf, sizeof(buf)-1);
+                    read_size = read(i, buf, sizeof(buf));
                     if (read_size == 0 || read_size == -1) {
                         printf("接続切れ%d\n",i);
                         close(i);
                     } else {
-                        buf[read_size] = '\0';
-                        write(i, buf, strlen(buf));
+                        write(i, buf, read_size);
                     }
                     if (read_size == -1 || read_size == 0) FD_CLR(i, &readfds);
                 }
