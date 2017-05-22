@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O -std=c99
+CFLAGS = -Wall -O -std=gnu99
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 

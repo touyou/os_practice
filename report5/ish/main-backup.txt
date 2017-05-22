@@ -91,7 +91,7 @@ int main(int argc, char *argv[], char *envp[]) {
         curr_job = parse_line(s);
         curr_prc = curr_job->process_list;
 
-        print_job_list(curr_job);
+        // print_job_list(curr_job);
         lastpid = 0;
         exec_process(curr_prc, envp);
         wait(&status);
