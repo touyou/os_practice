@@ -65,7 +65,6 @@ void fork_process(job* j, process *p, char *envp[]) {
         new_child(j, p);
         if (p->input_fd != 0) dup2(p->input_fd, 0);
         if (p->output_fd != 1) dup2(p->output_fd, 1);
-        printf("%s exec\n", get_program_name(p));
         execve(get_program_name(p), get_arg_list(p), envp);
         perror("failed running");
         exit(-1);
