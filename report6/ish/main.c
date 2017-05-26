@@ -57,11 +57,20 @@ void new_child(job *j, process *p) {
     }
 
     // SIGTTOUをデフォルトに直す？
+    struct sigaction def;
+    memset(&def, 0, sizeof(def));
+    def.sa_handler = SIG_DFL;
+    def.sa_flags = 0;
+    if (sigaction(SIGTTOU, &def, NULL) < 0) {
+        perror("SIGTTOU");
+        exit(-1);
+    }
 }
 
 void fork_process(job* j, process *p, char *envp[]) {
     int pid;
     if ((pid = fork()) == 0) {
+        p->pid = getpid();
         new_child(j, p);
         if (p->input_fd != 0) dup2(p->input_fd, 0);
         if (p->output_fd != 1) dup2(p->output_fd, 1);
@@ -108,7 +117,9 @@ void spawn_job(job* j, char *envp[]) {
         if ((fd = p->output_fd) != 1) close(p->output_fd);
     }
 
-    grab_cont(getpid());
+    if (j->mode == FOREGROUND) wait(NULL);
+    else waitpid(-j->pgid, NULL, WNOHANG);
+    grab_cont(ish_pid);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
@@ -116,10 +127,19 @@ int main(int argc, char *argv[], char *envp[]) {
     job *curr_job;
     job *top_job;
     int status;
+    int ish_fd = STDIN_FILENO;
     struct sigaction act;
+    struct sigaction none;
     memset(&act, 0, sizeof(act));
+    memset(&none, 0, sizeof(none));
     act.sa_handler = ignore_foreground_signal;
     act.sa_flags = 0;
+    none.sa_handler = SIG_IGN;
+    none.sa_flags = 0;
+
+    // while (tcgetpgrp(ish_fd) != (ish_pid=getpgrp()))
+    //   kill(-ish_pid, SIGTTIN);
+    // ish_pid = getpgrp();
 
     // signal action
     if ((status = sigaction(SIGINT, &act, NULL)) < 0) {
@@ -130,22 +150,27 @@ int main(int argc, char *argv[], char *envp[]) {
         perror("SIGTSTP");
         return -1;
     }
+    if ((status = sigaction(SIGTTOU, &none, NULL)) < 0) {
+        perror("SIGTTOU");
+        return -1;
+    }
 
     ish_pid = getpid();
     if (setpgid(ish_pid, ish_pid) < 0) {
         perror("ish init");
         return -1;
     }
-    grab_cont(ish_pid);
+    // grab_cont(ish_pid);
 
     while(get_line(s, LINELEN)) {
         if(!strcmp(s, "exit\n"))
             break;
+        if(!strcmp(s, "fg\n")) {}
+        if(!strcmp(s, "bg\n")) {}
 
         top_job = parse_line(s);
         curr_job = top_job;
         print_job_list(curr_job);
-        print_job_list(top_job);
 
         while (curr_job != NULL) {
             spawn_job(curr_job, envp);
