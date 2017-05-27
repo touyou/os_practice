@@ -1,0 +1,59 @@
+Student Information
+-------------------
+Nayef Copty - nayefc
+K Alnajar - kar
+
+How to execute the shell
+------------------------
+After using the Make command, use the command ./esh to run the shell. Pass '-p <directory>' as an argument to run custom plugins.
+
+Important Notes
+---------------
+There are no critical notes about the shell. All basic and advanced tests pass without issue.
+
+Description of Base Functionality
+---------------------------------
+
+jobs:
+The 'jobs' command will display a list of currently running jobs.
+It will display the jobs' IDs, their status and the actual command confirming to the regular expression in eshoutpy.py
+
+fg:
+fg will bring up a job from the background to the foreground and gives that process group terminal access. 
+If a job ID is given: fg % 2, it will bring that job to the foreground and give that foreground group terminal access.
+
+bg:
+The 'bg' command will continue a stopped job (by sending it SIGCONT).
+It can take a job ID as an argument (starting that specific job) or if no argument was passed, it will start the latest added job.
+
+kill:
+The 'kill' command will kill a job (by sending it SIGKILL).
+It can take a job ID as an argument (killing that specific job) or if no argument was passed, it will kill the latest started job.
+
+stop:
+The 'stop' command will stop a job (by sending it SIGSTOP).
+It can take a job ID as an argument (stopping that specific job) or if no argument was passed, it will stop the latest started job.
+
+^C:
+Ctrl-C is initiated by the user and will send a SIGINT signal, interrupting the job in the foreground.
+
+^Z:
+Ctrl-Z is initiated by the user and will send a SIGSTOP signal, stopping the job in the foreground.
+
+Description of Extended Functionality
+-------------------------------------
+
+I/O Redirection:
+I/O redirection will change the stdin or stdout source from/to a file. 
+To redirect output, this is implemented using "process > out" to redirect "process" output to file "out".
+To redirect input, this is implemented using "process < in" to redirect "process" stdin from file "in".
+
+Pipes:
+Pipes direct the stdout of one process into the stdin of the next process. For example:
+ls | grep esh | sort -r will run 'ls', direct its stdout into 'grep esh' which will search the output of 'ls' (list of current directory) for files that contain the name 'esh'.
+The stdout of that process (all files that contain esh) will be redirected into the stdin of 'sort -r' (which sorts data coming from stdin) which will sort the data 
+(in reverse order, -r flag) and that is outout to stdonut.
+
+Exclusive Access:
+Exclusive access allows a foreground process to have exclusive access to the terminal. Our test file demonstrates in multiple ways using a text editor. It also
+attemps to run Emacs in the background (which requires the terminal). Emacs is immediately stopped until the user puts it into the foreground.
