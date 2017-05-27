@@ -40,12 +40,28 @@ int signal_sethandler(int signal, void (*handler)(int)) {
     return sigaction(signal, &sa, NULL);
 }
 
+void signal_block(int signal) {
+    sigset_t sigset;
+    sigemptyset(&sigset);
+    sigaddset(&sigset, signal);
+    sigprocmask(SIG_BLOCK, &sigset, NULL);
+}
+
+void signal_unblock(int signal) {
+    sigset_t sigset;
+    sigemptyset(&sigset);
+    sigaddset(&sigset, signal);
+    sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+}
+
 /* process control */
 void grab_cont(pid_t pgid) {
+    signal_block(SIGTTOU);
     if(tcsetpgrp(STDIN_FILENO, pgid) < 0) {
         perror("tcsetpgrp grab_cont");
         exit(-1);
     }
+    signal_unblock(SIGTTOU);
 }
 
 void set_child_pgid(job *j, process *p) {

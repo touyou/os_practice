@@ -65,20 +65,20 @@ void spawn_job(job* j, char *envp[]) {
     }
 
     if (j->mode == FOREGROUND) wait(NULL);
-    else {
-        sigset_t sigset;
-        sigemptyset(&sigset);
-        sigaddset(&sigset, SIGCHLD);
-        sigprocmask(SIG_BLOCK, &sigset, NULL);
-        waitpid(-j->pgid, NULL, WNOHANG);
-        sigprocmask(SIG_UNBLOCK, &sigset, NULL);
-    }
+    else waitpid(-j->pgid, NULL, WNOHANG);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
     char s[LINELEN];
     job *bgjoblist = NULL;
     job *curr_job;
+
+    if (setpgid(0, 0) < 0) {
+        perror("ish init");
+        return -1;
+    }
+    ish_pid = getpid();
+    grab_cont(ish_pid);
 
     // signal action
     if (signal_sethandler(SIGINT, sigint_handler) < 0) {
@@ -91,12 +91,6 @@ int main(int argc, char *argv[], char *envp[]) {
     }
     if (signal_sethandler(SIGTTOU, SIG_IGN) < 0) {
         perror("SIGTTOU");
-        return -1;
-    }
-
-    ish_pid = getpid();
-    if (setpgid(ish_pid, ish_pid) < 0) {
-        perror("ish init");
         return -1;
     }
 

@@ -26,6 +26,8 @@ void append_job(job *list, job *curr);
 void sigint_handler(int signal);
 void sigtstp_handler(int signal);
 int signal_sethandler(int signal, void (*handler)(int));
+void signal_block(int signal);
+void signal_unblock(int signal);
 
 /**
  * process control
