@@ -1,0 +1,12 @@
+171023 藤井陽介
+
+ディレクトリ構成
+ish/
+    main.c ... jobの管理やforkなどのメインの処理
+    helper.c ... signalの管理やjobなどのgetter関数を実装しています
+    helper.h ... helper.cのヘッダーファイル
+    その他は配布資料のものです。
+
+B : pgidを設定したあとそのpgidをtcsetpgrpすることでフォアグラウンドにしています
+C : 先ほどの実装からtcsetpgrpのみやっていません。またwaitはSIGCHLDのハンドラ内で行っています
+D : フォアグラウンドの時のみ、SIGTSTPのハンドラ内でishにtcsetpgrpして戻し、bgを入力した時killをするとSIGCONTを送ります。中断した時のみjobのリストに追加しておきたいのでwaitpidのオプションでWUNTRACEDを設定し、SIGTSTPが検知された時にはjoblistに追加するように、その他正常に終了したときはfreeをするようにしています。

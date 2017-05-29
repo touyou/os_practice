@@ -21,15 +21,28 @@ write_option get_write_opt(process *j) {
 }
 
 void append_job(job *list, job *curr) {
-    if (list->next == NULL) list->next = curr;
-    else append_job(list->next, curr);
+    if (list == NULL) {
+        list = initialize_job();
+        list = curr;
+    } else append_job(list->next, curr);
 }
 
 /* signal utility */
 void sigint_handler(int signal) {}
 void sigtstp_handler(int signal) {}
 
-int signal_sethandler(int signal, void (*handler)(int)) {
+char *signal_to_string(int signal) {
+    switch (signal) {
+        case SIGINT: return "SIGINT";
+        case SIGTSTP: return "SIGTSTP";
+        case SIGCHLD: return "SIGCHLD";
+        case SIGTTIN: return "SIGTTIN";
+        case SIGTTOU: return "SIGTTOU";
+        default: return "UNKNOWN";
+    }
+}
+
+void signal_sethandler(int signal, void (*handler)(int)) {
     sigset_t emptymask;
     sigemptyset(&emptymask);
     struct sigaction sa = {
@@ -37,7 +50,10 @@ int signal_sethandler(int signal, void (*handler)(int)) {
         .sa_mask = emptymask,
         .sa_flags = 0
     };
-    return sigaction(signal, &sa, NULL);
+    if (sigaction(signal, &sa, NULL) < 0) {
+        perror(signal_to_string(signal));
+        exit(-1);
+    }
 }
 
 void signal_block(int signal) {
@@ -56,12 +72,10 @@ void signal_unblock(int signal) {
 
 /* process control */
 void grab_cont(pid_t pgid) {
-    // signal_block(SIGTTOU);
     if(tcsetpgrp(STDIN_FILENO, pgid) < 0) {
         perror("tcsetpgrp grab_cont");
         exit(-1);
     }
-    // signal_unblock(SIGTTOU);
 }
 
 void set_child_pgid(job *j, process *p) {
@@ -82,8 +96,6 @@ void new_child(job *j, process *p) {
     }
 
     // SIGTTOUをデフォルトに直す？
-    if (signal_sethandler(SIGTTOU, SIG_DFL) < 0) {
-        perror("SIGTTOU");
-        exit(-1);
-    }
+    signal_sethandler(SIGTTOU, SIG_DFL);
+    signal_sethandler(SIGTTIN, SIG_DFL);
 }

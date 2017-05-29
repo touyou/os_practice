@@ -19,7 +19,7 @@ typedef struct process_ {
 
     write_option output_option;
     char*        output_redirection;
-    
+
     int input_fd;
     int output_fd;
     pid_t pid;
@@ -46,6 +46,8 @@ typedef enum parse_state_ {
     OUT_REDIRCT_APPEND,
 } parse_state;
 
+
+job* initialize_job();
 char* get_line(char *, int);
 job* parse_line(char *);
 void free_job(job *);

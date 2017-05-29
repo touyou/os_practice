@@ -95,7 +95,7 @@ static process* initialize_process() {
     return p;
 }
 
-static job* initialize_job() {
+job* initialize_job() {
 
     job *j;
 
