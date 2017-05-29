@@ -111,7 +111,6 @@ int main(int argc, char *argv[], char *envp[]) {
         // else free_job(curr_job);
         free_job(curr_job);
     }
-    free_job(bgjoblist);
 
     return 0;
 }

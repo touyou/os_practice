@@ -35,7 +35,7 @@ int signal_sethandler(int signal, void (*handler)(int)) {
     struct sigaction sa = {
         .sa_handler = handler,
         .sa_mask = emptymask,
-        .sa_flags = SA_RESTART | SA_SIGINFO
+        .sa_flags = 0
     };
     return sigaction(signal, &sa, NULL);
 }
@@ -56,12 +56,12 @@ void signal_unblock(int signal) {
 
 /* process control */
 void grab_cont(pid_t pgid) {
-    signal_block(SIGTTOU);
+    // signal_block(SIGTTOU);
     if(tcsetpgrp(STDIN_FILENO, pgid) < 0) {
         perror("tcsetpgrp grab_cont");
         exit(-1);
     }
-    signal_unblock(SIGTTOU);
+    // signal_unblock(SIGTTOU);
 }
 
 void set_child_pgid(job *j, process *p) {
